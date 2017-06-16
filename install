@@ -1,0 +1,53 @@
+#!/bin/bash
+moddir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+jex_domainname="http://optima.jrc.it"
+jex_en_ball="en-eurovoc-1.0.zip"
+jex_nl_ball="nl-eurovoc-1.0.zip"
+jex_location="/Resources/Eurovoc/indexing"
+
+cd $moddir
+#
+# Install JEX
+#
+function install_jex_resource () {
+lang=$1
+zipball="$lang"-eurovoc-1.0.zip
+cd $moddir
+mkdir -p jex/$lang
+mkdir -p tmp
+cd tmp
+wget $jex_domainname/$jex_location/$zipball
+unzip -q $zipball
+mv "$lang"-eurovoc-1.0/resources $moddir/jex/$lang
+if
+  [ "$lang" == "nl" ]
+then
+  mkdir -p $moddir/lib
+  mv nl-eurovoc-1.0/lib/*.jar $moddir/lib 
+fi
+cd $moddir
+rm -rf tmp
+}
+
+install_jex_resource nl
+install_jex_resource en
+#
+# Generate jar
+# Helper script install-to-project-repo plugs 
+#
+cd $moddir
+mkdir -p tmp
+cd tmp
+# git clone https://github.com/carchrae/install-to-project-repo.git
+git clone https://github.com/PaulHuygen/install-to-project-repo.git
+cd $moddir
+python tmp/install-to-project-repo.py
+mvn clean install
+mv target/ixa-pipe-topic-1.0.3.jar .
+rm -rf tmp
+
+# JARFILE=ixa-pipe-tok-2.0.0-exec.jar
+# mvn clean package
+# mv target/$JARFILE .
+# rm -rf src
+# rm -rf target

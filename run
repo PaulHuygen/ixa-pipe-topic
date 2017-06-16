@@ -1,0 +1,14 @@
+#!/bin/bash
+thisdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+JARFILE=ixa-pipe-topic-1.0.3.jar
+cd $thisdir
+tempdir=`mktemp -d -t jex.XXXXXX`
+mkdir $tempdir/documents
+mkdir $tempdir/results
+cat $thisdir/default.prop \
+    | sed 's|jex/resources|'${thisdir}'/jex/LANG/resources|g' \
+    | sed 's|jex/result|'${tempdir}'/jex/result|g' \
+    | sed 's|LANG|'${naflang}'|g' \
+    >$tempdir/conf.prop
+java -Xmx1000m -jar $thisdir/$JARFILE -p $tempdir/conf.prop
+rm -rf $tempdir

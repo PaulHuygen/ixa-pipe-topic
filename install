@@ -41,7 +41,7 @@ cd tmp
 # git clone https://github.com/carchrae/install-to-project-repo.git
 git clone https://github.com/PaulHuygen/install-to-project-repo.git
 cd $moddir
-python tmp/install-to-project-repo.py
+python tmp/install-to-project-repo/install-to-project-repo.py
 mvn clean install
 mv target/ixa-pipe-topic-1.0.3.jar .
 rm -rf tmp
